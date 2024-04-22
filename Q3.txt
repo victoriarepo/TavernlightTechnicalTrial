@@ -1,0 +1,28 @@
+Original:
+function do_sth_with_PlayerParty(playerId, membername)
+player = Player(playerId)
+local party = player:getParty()
+
+for k,v in pairs(party:getMembers()) do
+if v == Player(membername) then
+party:removeMember(Player(membername))
+end
+end
+end
+
+Improved:
+function RemovePlayerFromParty(playerId, membername)
+	player = Player(playerId)
+	local party = player:getParty()
+
+	for k,partyMember in pairs(party:getMembers()) do
+		if partyMember.name == membername
+			party:removeMember(Player(membername))
+		end
+	end
+end
+
+Rationale:
+Changed variable name of "v" to partyMember to improve readability
+Changed the if statement to "if partyMember.name == membername" as it saves having to instantiate a new player object which is inefficient. We only need to check if the player has the specified name and don't need to check the whole player object
+Changed function name to RemovePlayerFromParty to more accurately describe what it does and improve readability

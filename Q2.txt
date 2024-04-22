@@ -1,0 +1,25 @@
+Original:
+function printSmallGuildNames(memberCount)
+-- this method is supposed to print names of all guilds that have less than memberCount max members
+local selectGuildQuery = "SELECT name FROM guilds WHERE max_members < %d;"
+local resultId = db.storeQuery(string.format(selectGuildQuery, memberCount))
+local guildName = result.getString("name")
+print(guildName)
+end
+
+Improved:
+function printSmallGuildNames(memberCount)
+	-- this method is supposed to print names of all guilds that have less than memberCount max members
+	local selectGuildQuery = "SELECT name FROM guilds WHERE max_members < %d;"
+	local resultId = db.storeQuery(string.format(selectGuildQuery, memberCount))
+	if resultId ~= false than
+		local guildName = result.getString(resultId, "name")
+		result.free(resultId)
+		print(guildName)
+	end
+end
+
+Rationale:
+Added missing "resultId" to result.getString() call
+Called result.free(resultId) after getting the "name" value to free the query result so it can be used again
+Checked that the query was successful in an if statement before trying to use the result

@@ -1,0 +1,25 @@
+Original:
+local function releaseStorage(player)
+player:setStorageValue(1000, -1)
+end
+
+function onLogout(player)
+if player:getStorageValue(1000) == 1 then
+addEvent(releaseStorage, 1000, player)
+end
+return true
+end
+
+Improved:
+function onLogout(player)
+	if player:getStorageValue(1000) == 1 then
+		player:setStorageValue(1000, -1)
+	end
+	return true
+end
+
+Rationale:
+Reducing the number of function calls to increase efficiency
+Events have overhead computation which can be avoided by calling player:setStorageValue() directly
+Also added indentation for readability
+Hard to know how to improve this code as it is a bit vague 

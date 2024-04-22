@@ -1,0 +1,51 @@
+Original:
+void Game::addItemToPlayer(const std::string& recipient, uint16_t itemId)
+{
+Player* player = g_game.getPlayerByName(recipient);
+if (!player) {
+player = new Player(nullptr);
+if (!IOLoginData::loadPlayerByName(player, recipient)) {
+return;
+}
+}
+
+Item* item = Item::CreateItem(itemId);
+if (!item) {
+return;
+}
+
+g_game.internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT);
+
+if (player->isOffline()) {
+IOLoginData::savePlayer(player);
+}
+}
+
+Improved:
+void Game::addItemToPlayer(const std::string& recipient, uint16_t itemId)
+{
+	Player* player = g_game.getPlayerByName(recipient);
+	if (!player) {
+		player = new Player(nullptr);
+		if (!IOLoginData::loadPlayerByName(player, recipient)) {
+			free(player);
+			return;
+		}
+	}
+
+	Item* item = Item::CreateItem(itemId);
+	if (!item) {
+		free(item);
+		return;
+	}
+
+	g_game.internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT);
+
+	if (player->isOffline()) {
+		IOLoginData::savePlayer(player);
+	}
+}
+
+Rationale:
+The line player = new Player(nullptr) is allocating memory to create a new player object but if !IOLoginData::loadPlayerByName(player, recipient) returns true, the function returns without freeing that memory. Calling free(player) before returning fixes this.
+It's not clear what Item::CreateItem(itemId) does but it looks like this function could potentially allocate memory too. If it does, the same issue as above is present here and item will need to be freed before the function returns if it is null.
