@@ -1,0 +1,36 @@
+First was getting the following errors:
+'_' uses undefined struct 'fmt::v10::detail::type_is_unformattable_for<T,char>'
+Severity Code Description Project File Line Suppression State Details Error C2338 static_assert failed: 'Cannot format an argument. To make type T formattable provide a formatter<T> specialization: https://fmt.dev/latest/api.html#udt' theforgottenserver C:\Users\victo\Downloads\Tavernlight\vcpkg-master\installed\x64-windows\include\fmt\core.h 1604
+Added the code below to tools.h to fix this by following: https://otland.net/threads/solved-core-h-errors-tfs-1-5-downgrade-8-6.287017/
+template < typename E >
+auto format_as(E e) {
+	return fmt::underlying(e);
+}
+
+Then when running in visual studio it was saying it could not find lua.config
+Followed this https://otland.net/threads/cannot-open-config-lua-no-such-file-or-directory.242102/
+Copied contents of forgottenserver-1.4\vc17\x64\Release to location of lua.config.dist to fix
+
+Downloaded and compiled OTClient but had an openssl error saying it could not find rsa.h
+I spent me 3 days trying to install it manually but nothing working
+I only got otclient building when I used vcpkg to install openssl 
+
+Then I was getting an error that visual studio couldn't find pwsh.exe
+Had to then install powershell 7 manually 
+From what I read online it seems vcpkg doesn't always install this properly
+
+Finally I could move on to the step "Running Your First OT Server"
+
+Ran the OTClient and tried to log in but got errors about missing .spr and .dat files
+Had to google to find out these need to be downloaded and to find where to download them from:
+https://otland.net/threads/where-can-i-find-the-spr-dat-files-for-13-10.287783/
+https://downloads.ots.me/?dir=data/tibia-clients/dat_and_spr
+Found them and downloaded version 1074 because this version was already selected in the client
+Then got an error saying it can only use 1098 so went and downloaded these instead
+Next error was that my character couldn't be loaded and the forgotten server terminal said the town id 9 didn't exist
+Found on google that this needs to be set to 1 so modified this in the database: https://otland.net/threads/town-id-help.226503/
+Then log in was successful and the editor opened up
+
+Was having trouble getting the area effect displaying in the shape I wanted using the OTClient linked in the email
+A lot of people online recommended against using the OTClient by edubart: https://otland.net/threads/issue-on-the-animation-of-eternal-winter.281595/
+I downloaded OTClientV8 instead and this seemed to fix the shape
